@@ -4,7 +4,10 @@ const router = require("express").Router();
 
 const User = require("../modules/user");
 const validation = require("../handlers/validation");
-const userRegister = require("../controllers/user");
+const userController = require("../controllers/user");
+const tokenHandler = require("../handlers/tokenHandler");
+// const userLogin = require("../controllers/login");
+
 // Register API
 router.post(
   "/register",
@@ -26,7 +29,24 @@ router.post(
     });
   }),
   validation.validate,
-  userRegister.register
+  userController.register
 );
 
+// Login API
+router.post(
+  "/login",
+  body("username")
+    .isLength({ min: 8 })
+    .withMessage("Username needs more than 8 characters"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Password needs more than 8 characters"),
+  validation.validate,
+  userController.login
+);
+
+// JWT Verify API
+router.post("/verify-token", tokenHandler.verifyToken, (req, res) => {
+  return res.status(200).json({ user: req.user });
+});
 module.exports = router;
