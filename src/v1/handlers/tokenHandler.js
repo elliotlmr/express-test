@@ -15,9 +15,10 @@ const tokenDecode = (req) => {
       // bearer = jwt envの鍵でJWTをdecodeする
 
       //   ??? この辺に問題あり？Authorizeできない
-      return tokenDecoded;
       console.log("test3", tokenDecoded);
-    } catch {
+      return tokenDecoded;
+    } catch (error) {
+      console.log("Error:", error);
       return false;
     }
   } else {
