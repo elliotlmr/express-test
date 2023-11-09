@@ -24,7 +24,7 @@ router.post(
   body("username").custom((value) => {
     return User.findOne({ username: value }).then((user) => {
       if (user) {
-        return Promise.reject("A user already exists.");
+        return Promise.reject("User already exists.");
       }
     });
   }),
