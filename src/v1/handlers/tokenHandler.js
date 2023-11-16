@@ -14,7 +14,6 @@ const tokenDecode = (req) => {
       const tokenDecoded = jwt.verify(bearer, process.env.JWT_SECRET_KEY);
       // bearer = jwt envの鍵でJWTをdecodeする
 
-      //   ??? この辺に問題あり？Authorizeできない
       console.log("test3", tokenDecoded);
       return tokenDecoded;
     } catch (error) {
