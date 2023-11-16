@@ -27,14 +27,21 @@ exports.register = async (req, res) => {
   }
 };
 
+// exports/login の真似してアカウトが存在する時のエラーをかけるかも？
+
 exports.login = async (req, res) => {
   const { username, password } = req.body;
+
   try {
-    const user = await User.findOne({ username }).select("password username");
+    const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(401).json({
-        param: "username",
-        message: "Wrong username",
+        errors: [
+          {
+            param: "username",
+            msg: "Wrong username",
+          },
+        ],
       });
     }
     // Verify password
@@ -50,8 +57,12 @@ exports.login = async (req, res) => {
     // UTF-8 エンコーディングの文字列に変換するJavaScriptコード
     if (decryptedPassword !== password) {
       return res.status(401).json({
-        param: "password",
-        message: "Wrong password",
+        errors: [
+          {
+            param: "password",
+            msg: "Wrong password",
+          },
+        ],
       });
     }
     // JWT
