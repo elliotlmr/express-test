@@ -46,7 +46,7 @@ router.post(
 );
 
 // JWT Verify API
-router.post("/", tokenHandler.verifyToken, (req, res) => {
+router.post("/verify-token", tokenHandler.verifyToken, (req, res) => {
   return res.status(200).json({ user: req.user });
 });
 module.exports = router;
