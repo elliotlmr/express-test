@@ -5,5 +5,6 @@ const tokenHandler = require("../handlers/tokenHandler");
 
 router.post("/", tokenHandler.verifyToken, memoController.create);
 router.get("/", tokenHandler.verifyToken, memoController.getAll);
+router.get("/:memoId", tokenHandler.verifyToken, memoController.getOne);
 
 module.exports = router;
