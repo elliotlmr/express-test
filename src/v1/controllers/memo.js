@@ -47,3 +47,16 @@ exports.update = async (req, res) => {
     res.status(500).json(err);
   }
 };
+exports.delete = async (req, res) => {
+  const { memoId } = req.params;
+  const { title, description } = req.body;
+  try {
+    const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
+    if (!memo) return res.status(404).json("Memo doesn't exist");
+
+    await Memo.deleteOne({ _id: memoId });
+    res.status(200).json("Successfully deleted");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
