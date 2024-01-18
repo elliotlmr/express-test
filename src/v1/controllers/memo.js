@@ -30,20 +30,84 @@ exports.getOne = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+// exports.update = async (req, res) => {
+//   const { memoId } = req.params;
+//   const { title, description } = req.body;
+//   try {
+//     if (title === "") req.body.title = "No Title";
+//     if (description === "") req.body.description = "No Description";
+//     const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
+//     if (!memo) return res.status(404).json("Memo doesn't exist");
+
+//     const updatedMemo = await Memo.findByIdAndUpdate(memoId, {
+//       $set: req.body,
+//     });
+//     res.status(200).json(updatedMemo);
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// };
+
+exports.updatePosition = async (req, res) => {
+  const { memos } = req.body;
+  try {
+    for (const key in memos.revers()) {
+      const memo = memos[key];
+      await Memo.findByIdAndUpdate(memo.id, { $set: { position: key } });
+    }
+    res.status(200).json("Updated");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 exports.update = async (req, res) => {
   const { memoId } = req.params;
   const { title, description } = req.body;
   try {
     if (title === "") req.body.title = "No Title";
     if (description === "") req.body.description = "No Description";
-    const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
-    if (!memo) return res.status(404).json("Memo doesn't exist");
 
-    const updatedMemo = await Memo.findByIdAndUpdate(memoId, {
-      $set: req.body,
-    });
-    res.status(200).json(updatedMemo);
+    const currentMemo = await Memo.findByIdAndUpdate(memoId);
+    if (!currentMemo) return res.status(404).json("The memo doesn't exist");
+
+    // When there is no favorite memo
+    if (favorite !== undefined && currentMemo.favorite !== favorite) {
+      const favorites = await Memo.find({
+        user: currentMemo.user,
+        favorite: true,
+        _id: { $ne: memoId },
+      });
+      console.log(favorites);
+
+      if (favorite) {
+        req.body.favoritePosition = favorites.length > 0 ? favorites.length : 0;
+      } else {
+        for (const key in favorites) {
+          const element = favorites[key];
+          await Memo.findByIdAndUpdate(element._id, {
+            $set: { favoritePosition: key },
+          });
+        }
+      }
+    }
+    const memo = await Memo.findByIdAndUpdate(memoId, { $set: req.body });
+    res.status(200).json(memo);
   } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.getFavorites = async (req, res) => {
+  try {
+    const favorites = await Memo.find({
+      user: req.user._id,
+      favorite: true,
+    }).sort("-favoritePosition");
+    res.status(200).json(favorites);
+  } catch (err) {
+    console.log("error happens here", err);
     res.status(500).json(err);
   }
 };

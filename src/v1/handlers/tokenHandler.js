@@ -8,7 +8,7 @@ const tokenDecode = (req) => {
   const bearerHeader = req.headers["authorization"];
   if (bearerHeader) {
     const bearer = bearerHeader.split(" ")[1];
-    console.log("test1", bearerHeader);
+    // console.log("test1", bearerHeader);
     try {
       console.log("test2", bearer);
       const tokenDecoded = jwt.verify(bearer, process.env.JWT_SECRET_KEY);
