@@ -20,16 +20,6 @@ exports.getAll = async (req, res) => {
     return res.status(500).json(err);
   }
 };
-exports.getOne = async (req, res) => {
-  const { memoId } = req.params;
-  try {
-    const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
-    if (!memo) return res.status(404).json("Memo doesn't exist");
-    res.status(200).json(memo);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
 
 // exports.update = async (req, res) => {
 //   const { memoId } = req.params;
@@ -62,14 +52,25 @@ exports.updatePosition = async (req, res) => {
   }
 };
 
+exports.getOne = async (req, res) => {
+  const { memoId } = req.params;
+  try {
+    const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
+    if (!memo) return res.status(404).json("Memo doesn't exist");
+    res.status(200).json(memo);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 exports.update = async (req, res) => {
   const { memoId } = req.params;
-  const { title, description } = req.body;
+  const { title, description, favorite } = req.body;
   try {
     if (title === "") req.body.title = "No Title";
     if (description === "") req.body.description = "No Description";
 
-    const currentMemo = await Memo.findByIdAndUpdate(memoId);
+    const currentMemo = await Memo.findById(memoId);
     if (!currentMemo) return res.status(404).json("The memo doesn't exist");
 
     // When there is no favorite memo
@@ -86,7 +87,7 @@ exports.update = async (req, res) => {
       } else {
         for (const key in favorites) {
           const element = favorites[key];
-          await Memo.findByIdAndUpdate(element._id, {
+          await Memo.findByIdAndUpdate(element.id, {
             $set: { favoritePosition: key },
           });
         }
@@ -95,6 +96,7 @@ exports.update = async (req, res) => {
     const memo = await Memo.findByIdAndUpdate(memoId, { $set: req.body });
     res.status(200).json(memo);
   } catch (err) {
+    console.log("error with update", err);
     res.status(500).json(err);
   }
 };
@@ -107,7 +109,7 @@ exports.getFavorites = async (req, res) => {
     }).sort("-favoritePosition");
     res.status(200).json(favorites);
   } catch (err) {
-    console.log("error happens here", err);
+    console.log("error with getFavorite", err);
     res.status(500).json(err);
   }
 };

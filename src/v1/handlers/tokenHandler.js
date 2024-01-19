@@ -10,11 +10,11 @@ const tokenDecode = (req) => {
     const bearer = bearerHeader.split(" ")[1];
     // console.log("test1", bearerHeader);
     try {
-      console.log("test2", bearer);
+      // console.log("test2", bearer);
       const tokenDecoded = jwt.verify(bearer, process.env.JWT_SECRET_KEY);
       // bearer = jwt envの鍵でJWTをdecodeする
 
-      console.log("test3", tokenDecoded);
+      // console.log("test3", tokenDecoded);
       return tokenDecoded;
     } catch (error) {
       console.log("Error:", error);
@@ -28,7 +28,7 @@ const tokenDecode = (req) => {
 // Middle wear to verify JWT
 exports.verifyToken = async (req, res, next) => {
   const tokenDecoded = tokenDecode(req);
-  console.log(tokenDecoded);
+  // console.log(tokenDecoded);
   if (tokenDecoded) {
     // JWTが一致するUserを探したい
     const user = await User.findById(tokenDecoded.id);
