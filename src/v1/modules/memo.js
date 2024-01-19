@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { schemaOptions } = require("./modelOption");
 
 // const userSchema = new mongoose.UserSchema({
-const memoSchema = mongoose.Schema({
+const memoSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
