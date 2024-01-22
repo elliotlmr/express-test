@@ -44,7 +44,7 @@ exports.updatePosition = async (req, res) => {
   try {
     for (const key in memos.revers()) {
       const memo = memos[key];
-      await Memo.findByIdAndUpdate(memo.id, { $set: { position: key } });
+      await Memo.findByIdAndUpdate(memo._id, { $set: { position: key } });
     }
     res.status(200).json("Updated");
   } catch (err) {
@@ -80,17 +80,18 @@ exports.update = async (req, res) => {
         favorite: true,
         _id: { $ne: memoId },
       });
-      console.log(favorites);
+      // console.log("---Update Favorites", favorites);
 
       if (favorite) {
         req.body.favoritePosition = favorites.length > 0 ? favorites.length : 0;
       } else {
         for (const key in favorites) {
           const element = favorites[key];
-          await Memo.findByIdAndUpdate(element.id, {
+          await Memo.findByIdAndUpdate(element._id, {
             $set: { favoritePosition: key },
           });
         }
+        // console.log(favorite);
       }
     }
     const memo = await Memo.findByIdAndUpdate(memoId, { $set: req.body });
