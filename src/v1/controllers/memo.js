@@ -14,39 +14,22 @@ exports.create = async (req, res) => {
 };
 exports.getAll = async (req, res) => {
   try {
-    const memos = await Memo.find({ user: req.user._id }).sort("-position");
+    const memos = await Memo.find({ user: req.user._id }).sort("position");
     res.status(200).json(memos);
   } catch (err) {
     return res.status(500).json(err);
   }
 };
 
-// exports.update = async (req, res) => {
-//   const { memoId } = req.params;
-//   const { title, description } = req.body;
-//   try {
-//     if (title === "") req.body.title = "No Title";
-//     if (description === "") req.body.description = "No Description";
-//     const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
-//     if (!memo) return res.status(404).json("Memo doesn't exist");
-
-//     const updatedMemo = await Memo.findByIdAndUpdate(memoId, {
-//       $set: req.body,
-//     });
-//     res.status(200).json(updatedMemo);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// };
-
 exports.updatePosition = async (req, res) => {
-  const { memos } = req.body;
+  const memos = req.body;
   try {
-    for (const key in memos.revers()) {
+    // for (const key in memos.revers()) {
+    for (const key in memos) {
       const memo = memos[key];
       await Memo.findByIdAndUpdate(memo._id, { $set: { position: key } });
     }
-    res.status(200).json("Updated");
+    res.status(200).json("Position Updated");
   } catch (err) {
     res.status(500).json(err);
   }
@@ -107,7 +90,7 @@ exports.getFavorites = async (req, res) => {
     const favorites = await Memo.find({
       user: req.user._id,
       favorite: true,
-    }).sort("-favoritePosition");
+    }).sort("favoritePosition");
     res.status(200).json(favorites);
   } catch (err) {
     console.log("error with getFavorite", err);
@@ -127,3 +110,21 @@ exports.delete = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+// exports.update = async (req, res) => {
+//   const { memoId } = req.params;
+//   const { title, description } = req.body;
+//   try {
+//     if (title === "") req.body.title = "No Title";
+//     if (description === "") req.body.description = "No Description";
+//     const memo = await Memo.findOne({ user: req.user._id, _id: memoId });
+//     if (!memo) return res.status(404).json("Memo doesn't exist");
+
+//     const updatedMemo = await Memo.findByIdAndUpdate(memoId, {
+//       $set: req.body,
+//     });
+//     res.status(200).json(updatedMemo);
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// };
