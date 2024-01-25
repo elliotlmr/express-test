@@ -23,6 +23,7 @@ const memoSchema = new Schema({
   },
   position: {
     type: Number,
+    default: 0,
   },
   favorite: {
     type: Boolean,
