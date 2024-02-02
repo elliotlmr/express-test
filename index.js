@@ -6,25 +6,24 @@ const PORT = 3001;
 require("dotenv").config();
 
 // Solve cors error
-app.use(
-  cors({
-    // origin: ["http://localhost:3000", "https://mymemo-client.vercel.app"],
-    origin: ["http://localhost:3000", "https://mymemo-client.vercel.app"],
-    methods: ["POST", "GET", "PUT", "DELETE", "UPDATE"],
-  })
-);
-app.all("*", function (req, res, next) {
-  const origin = cors.origin.includes(req.header("origin").toLowerCase())
-    ? req.headers.origin
-    : cors.default;
-  res.header("Access-Control-Allow-Origin", origin);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "https://mymemo-client.vercel.app"],
+//     methods: ["POST", "GET", "PUT", "DELETE", "UPDATE"],
+//   })
+// );
+// app.all("*", function (req, res, next) {
+//   const origin = cors.origin.includes(req.header("origin").toLowerCase())
+//     ? req.headers.origin
+//     : cors.default;
+//   res.header("Access-Control-Allow-Origin", origin);
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
+app.use(course());
 app.use(express.json());
 app.use("/api/v1", require("./src/v1/routes"));
 
