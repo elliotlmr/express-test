@@ -4,6 +4,21 @@ const app = express();
 const cors = require("cors");
 const PORT = 3001;
 require("dotenv").config();
+// "mongodb+srv://lemairelliot:lzJnNUSTWDh9iEKl@cluster0.for30t5.mongodb.net/helloworld"
+// Connect to MongoDB
+mongoose.connect(process.env.TEST, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connected to MongoDB');
+  // Start your Express server or perform other actions here
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB:', error.message);
+});
+
+
+app.use(express.json());
 
 // app.use((req, res, next) => {
 //   const allowedOrigins = [
@@ -30,6 +45,7 @@ var allowedOrigins = [
   "http://localhost:3000",
   "https://mymemo-client.vercel.app",
 ];
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -65,19 +81,13 @@ app.use(
 //   );
 //   next();
 // });
-app.use(express.json());
+
 app.use("/api/v1", require("./src/v1/routes"));
 
 // -> localhost:3300/api/v1/register
 
-// Connect to MongoDB
-try {
-  mongoose.connect(process.env.MONGODB_URL);
-  console.log("db connected");
-} catch (err) {
-  console.log(err);
-}
-
 app.listen(PORT, () => {
   console.log("local server is running");
 });
+
+module.exports = app;
